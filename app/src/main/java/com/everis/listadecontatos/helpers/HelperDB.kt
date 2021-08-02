@@ -41,10 +41,14 @@ class HelperDB(
     }
 
     fun buscarContatos(busca: String) : List<ContatosVO> {
+        salvarContato(ContatosVO(0, "teste 2", "teste 2"))
         val db = readableDatabase ?: return mutableListOf()
         val lista = mutableListOf<ContatosVO>()
         val sql = "SELECT * FROM $TABLE_NAME"
-        val cursor = db.rawQuery(sql, null) ?: return mutableListOf()
+        val cursor = db.rawQuery(sql, null)
+        if (cursor == null) {
+            return mutableListOf()
+        }
         while (cursor.moveToNext()) {
             val contato = ContatosVO(
                 cursor.getInt(cursor.getColumnIndex(COLUMN_ID)),
@@ -53,6 +57,15 @@ class HelperDB(
             )
             lista.add(contato)
         }
+        db.close()
         return lista
+    }
+
+    fun salvarContato(contato: ContatosVO) {
+        val db = writableDatabase ?: return
+        val sql = "INSERT INTO $TABLE_NAME ($COLUMN_NOME, $COLUMN_TELEFONE) VALUES (?, ?)"
+        var array = arrayOf(contato.nome, contato.telefone)
+        db.execSQL(sql, array)
+        db.close()
     }
 }
