@@ -1,5 +1,6 @@
 package com.everis.listadecontatos.helpers
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -41,12 +42,12 @@ class HelperDB(
     }
 
     fun buscarContatos(busca: String) : List<ContatosVO> {
-        salvarContato(ContatosVO(0, "teste 2", "teste 2"))
         val db = readableDatabase ?: return mutableListOf()
         val lista = mutableListOf<ContatosVO>()
         val sql = "SELECT * FROM $TABLE_NAME"
         val cursor = db.rawQuery(sql, null)
         if (cursor == null) {
+            db.close()
             return mutableListOf()
         }
         while (cursor.moveToNext()) {
@@ -63,9 +64,10 @@ class HelperDB(
 
     fun salvarContato(contato: ContatosVO) {
         val db = writableDatabase ?: return
-        val sql = "INSERT INTO $TABLE_NAME ($COLUMN_NOME, $COLUMN_TELEFONE) VALUES (?, ?)"
-        var array = arrayOf(contato.nome, contato.telefone)
-        db.execSQL(sql, array)
+        val content = ContentValues()
+        content.put(COLUMN_NOME, contato.nome)
+        content.put(COLUMN_TELEFONE, contato.telefone)
+        db.insert(TABLE_NAME, null, content)
         db.close()
     }
 }
