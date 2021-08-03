@@ -87,4 +87,15 @@ class HelperDB(
         db.execSQL(sql, args)
         db.close()
     }
+
+    fun updateContato(contato: ContatosVO) {
+        val db = writableDatabase ?: return
+        val content = ContentValues()
+        content.put(COLUMN_NOME, contato.nome)
+        content.put(COLUMN_TELEFONE, contato.telefone)
+        val where = "id = ?"
+        val args = arrayOf("${contato.id}")
+        db.update(TABLE_NAME, content, where, args)
+        db.close()
+    }
 }

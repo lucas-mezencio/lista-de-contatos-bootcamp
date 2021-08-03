@@ -47,7 +47,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun onClickItemRecyclerView(index: Int){
-        val intent = Intent(this,ContatoActivity::class.java)
+        val intent = Intent(this, ContatoActivity::class.java)
         intent.putExtra("index", index)
         startActivity(intent)
     }
